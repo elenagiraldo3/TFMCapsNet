@@ -14,6 +14,6 @@ ______
 * NumPy (http://www.numpy.org/)
 * GPU
 
-[//]: # ### Loss function hyper-parameters (see [loss.py](loss.py)):
-[//]: # * Lambda for Margin Loss = 0.5
-[//]: # * Scaling factor for reconstruction loss = 0.0005
+[//]: # (### Loss function hyper-parameters (see [loss.py](loss.py)):)
+[//]: # (* Lambda for Margin Loss = 0.5)
+[//]: # (* Scaling factor for reconstruction loss = 0.0005)
