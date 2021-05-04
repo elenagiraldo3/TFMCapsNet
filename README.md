@@ -16,4 +16,6 @@ ______
 
 ______
 
-Abstract.Garbage  management  is  an  essential  task  in  the  everydaylife of a city. In many countries, dumpsters are owned and deployed bythe public administration. An updated what-and-where list is in the coreof the decision making process when it comes to remove or renew themas  well  as  it  may  give  extra  information  to  other  analytics  in  a  smartcity context. In this paper we present a Capsule Network that attains a95.35% of accuracy in recognition over the largest dataset of dumpstersavailable nowadays.
+### Abstract
+
+Garbage  management  is  an  essential  task  in  the  everydaylife of a city. In many countries, dumpsters are owned and deployed bythe public administration. An updated what-and-where list is in the coreof the decision making process when it comes to remove or renew themas  well  as  it  may  give  extra  information  to  other  analytics  in  a  smartcity context. In this paper we present a Capsule Network that attains a95.35% of accuracy in recognition over the largest dataset of dumpstersavailable nowadays.
