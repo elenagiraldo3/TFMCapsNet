@@ -27,7 +27,7 @@ class DumpstersDataset(Dataset):
         pbar = tqdm(total=len(images_path.values), leave=False, position=0)
         pbar.set_description("Loading images from "+csv_file)
         for image_path in images_path.values:
-
+            print(image_path)
             image = io.imread(image_path)
             if len(image.shape) > 3:
                 image = image[0]
