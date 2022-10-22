@@ -6,6 +6,7 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+
 class MarginLoss(nn.Module):
     def __init__(self, size_average=False, loss_lambda=0.5):
         '''
@@ -18,12 +19,13 @@ class MarginLoss(nn.Module):
         '''
         super(MarginLoss, self).__init__()
         self.size_average = size_average
-        self.m_plus = 0.9
+        self.m_plus = 0.9  # TODO: que son m+ y m-
         self.m_minus = 0.1
         self.loss_lambda = loss_lambda
 
     def forward(self, inputs, labels):
-        L_k = labels * F.relu(self.m_plus - inputs)**2 + self.loss_lambda * (1 - labels) * F.relu(inputs - self.m_minus)**2
+        L_k = labels * F.relu(self.m_plus - inputs) ** 2 + self.loss_lambda * (1 - labels) * F.relu(
+            inputs - self.m_minus) ** 2
         L_k = L_k.sum(dim=1)
 
         if self.size_average:
@@ -31,16 +33,17 @@ class MarginLoss(nn.Module):
         else:
             return L_k.sum()
 
+
 class CapsuleLoss(nn.Module):
     def __init__(self, recons, loss_lambda=0.5, recon_loss_scale=5e-4, size_average=False):
-        '''
+        """
         Combined margin loss and reconstruction loss. Margin loss see above.
         Sum squared error (SSE) was used as a reconstruction loss.
-        
+
         Args:
-            recon_loss_scale: 	param for scaling down the the reconstruction loss
+            recon_loss_scale: 	param for scaling down the reconstruction loss
             size_average:		if True, reconstruction loss becomes MSE instead of SSE
-        '''
+        """
         super(CapsuleLoss, self).__init__()
         self.size_average = size_average
         self.recons = recons

@@ -8,8 +8,10 @@ import torch.nn.functional as F
 from numpy import prod
 import capsules as caps
 
+
 class CapsuleNetwork(nn.Module):
-    def __init__(self, img_shape, num_filters, stride, filter_size, recons, primary_dim, num_classes, out_dim, num_routing, device: torch.device, kernel_size=9):
+    def __init__(self, img_shape, num_filters, stride, filter_size, recons, primary_dim, num_classes, out_dim,
+                 num_routing, device: torch.device, kernel_size=9):
         super(CapsuleNetwork, self).__init__()
         self.img_shape = img_shape
         self.num_classes = num_classes
@@ -20,17 +22,18 @@ class CapsuleNetwork(nn.Module):
         self.relu = nn.ReLU(inplace=True)
         self.primary = caps.PrimaryCapsules(num_filters, 256, primary_dim, 9, 2)
         # primary_caps value currently must be set by hand
-        #primary_caps = int(num_filters / primary_dim * ( img_shape[1] - 2*(kernel_size-stride) ) * ( img_shape[2] - 2*(kernel_size-stride) ) / 4)
+        # primary_caps = int(num_filters / primary_dim * (img_shape[1] - 2 * (kernel_size - stride)) * (
+        #            img_shape[2] - 2 * (kernel_size - stride)) / 4)
         self.digits = caps.RoutingCapsules(primary_dim, 512, num_classes, out_dim, num_routing, device=self.device)
 
         if self.recons:
             self.decoder = nn.Sequential(
-            nn.Linear(out_dim * num_classes, 512),
-            nn.ReLU(inplace=True),
-            nn.Linear(512, 1024),
-            nn.ReLU(inplace=True),
-            nn.Linear(1024, int(prod(img_shape)) ),
-            nn.Sigmoid()
+                nn.Linear(out_dim * num_classes, 512),
+                nn.ReLU(inplace=True),
+                nn.Linear(512, 1024),
+                nn.ReLU(inplace=True),
+                nn.Linear(1024, int(prod(img_shape))),
+                nn.Sigmoid()
             )
 
     def forward(self, x):
@@ -46,11 +49,11 @@ class CapsuleNetwork(nn.Module):
 
         if self.recons:
             # Reconstruct the *predicted* image
-            _, max_length_idx = preds.max(dim=1)	
+            _, max_length_idx = preds.max(dim=1)
             y = torch.eye(self.num_classes).to(self.device)
             y = y.index_select(dim=0, index=max_length_idx).unsqueeze(2)
 
-            reconstructions = self.decoder( (out*y).view(out.size(0), -1) )
+            reconstructions = self.decoder((out * y).view(out.size(0), -1))
             reconstructions = reconstructions.view(-1, *self.img_shape)
             output = (preds, reconstructions)
         return output
