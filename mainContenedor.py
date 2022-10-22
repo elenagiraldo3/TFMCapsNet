@@ -76,9 +76,9 @@ dictionary = {"TIPO_CONTENEDOR": {"0": "Envases Ligeros",
                                         "4": "Frontal metálico por gravedad", "5": "Frontal plástico", "6": "Iglú",
                                         "7": "Lateral metálico por gravedad", "8": "Otros"},
               "ESTADO_SERIGRAFIA": {"0": "Sin serigrafía", "1": "Incompleta", "2": "Completa"},
-              "ESTADO_CUERPO": {"0": "Defectuoso", "1": "Correcto"},
-              "ESTADO_TAPA": {"0": "Defectuoso", "1": "Correcto"},
-              "ESTADO_ELEMENTOS_DE_EVALUACION": {"0": "Defectuoso", "1": "Correcto"},
+              "ESTADO_CUERPO": {"1": "Defectuoso", "0": "Correcto"},
+              "ESTADO_TAPA": {"1": "Defectuoso", "0": "Correcto"},
+              "ESTADO_ELEMENTOS_DE_EVALUACION": {"1": "Defectuoso", "0": "Correcto"},
               "ESTADO_TIPO_DE_CARGA": {"0": "Trasera", "1": "Lateral", "2": "Superior"}}
 
 num_labels = len(labels)
