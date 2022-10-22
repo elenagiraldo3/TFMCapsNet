@@ -40,9 +40,7 @@ parser.add_argument('--multi_gpu', action='store_true', help='Flag whether to us
 # Select GPU device
 parser.add_argument('--gpu_device', type=int, default=None, help='ID of a GPU to use when multiple GPUs are available.')
 # Data directory
-parser.add_argument('--data_path', type=str, default="train7",
-                    help='Path to the DUMPSTERS dataset. Alternatively you can set the path as an environmental '
-                         'variable $data.')
+parser.add_argument('--data_folder', type=str, help='Path to the folder containing the datasets')
 args = parser.parse_args()
 print(args)
 device = torch.device(args.device)
@@ -54,9 +52,9 @@ if args.multi_gpu:
     args.batch_size *= torch.cuda.device_count()
 
 
-args.train_data_path = "C:/Users/elena/Documents/TFM/AA_TAG_IMAGENES/train.csv"
-args.eval_data_path = "C:/Users/elena/Documents/TFM/AA_TAG_IMAGENES/validation.csv"
-args.test_data_path = "C:/Users/elena/Documents/TFM/AA_TAG_IMAGENES/test.csv"
+args.train_data_path = f"{args.data_folder}/train.csv"
+args.eval_data_path = f"{args.data_folder}/validation.csv"
+args.test_data_path = f"{args.data_folder}/test.csv"
 size = 299
 mean, std = ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
 labels = ["TIPO_CONTENEDOR", "SOTERRADO", "ESTADO_GRAFITI", "ESTADO_QUEMADO", "ESTADO_N_BOCA", "ESTADO_BOCAS",
@@ -132,23 +130,17 @@ transform_eval_test = transforms.Compose([
 ])
 
 loaders = {}
-# trainset = datasets.ImageFolder(root=args.train_data_path, transform=transform)
-# evalset = datasets.ImageFolder(root=args.eval_data_path, transform=transform_eval_test)
-# testset = datasets.ImageFolder(root=args.test_data_path, transform=transform_eval_test)
+
 columns = ["FOTO_CONTENEDOR", "TIPO_CONTENEDOR", "SOTERRADO", "ESTADO_GRAFITI", "ESTADO_QUEMADO", "ESTADO_N_BOCA",
            "ESTADO_BOCAS", "ESTADO_CIERRE", "ESTADO_TIPO_DE_CIERRE", "ESTADO_SERIGRAFIA", "ESTADO_CUERPO",
            "ESTADO_TAPA", "ESTADO_ELEMENTOS_DE_EVALUACION", "ESTADO_TIPO_DE_CARGA"]
 trainset = dataset.DumpstersDataset(args.train_data_path, columns=columns, transform=transform)
 evalset = dataset.DumpstersDataset(args.eval_data_path, columns=columns, transform=transform_eval_test)
 testset = dataset.DumpstersDataset(args.test_data_path, columns=columns, transform=transform_eval_test)
-# trainset = datasets.MNIST('/files/', train=True, download=True, transform=transform)
-# evalset = datasets.MNIST('/files/', train=False, download=True, transform=transform_eval_test)
-# testset = datasets.MNIST('/files/', train=False, download=True, transform=transform_eval_test)
 
 loaders['train'] = torch.utils.data.DataLoader(trainset, batch_size=args.batch_size, shuffle=True)
 loaders['eval'] = torch.utils.data.DataLoader(evalset, batch_size=args.batch_size, shuffle=False)
 loaders['test'] = torch.utils.data.DataLoader(testset, batch_size=args.batch_size, shuffle=False)
-
 print(8 * '#', 'Using Dumpster dataset', 8 * '#')
 
 # Run
