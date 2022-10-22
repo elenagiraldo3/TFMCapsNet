@@ -1,12 +1,10 @@
-import os.path
-
 from torch.utils.data import Dataset
 import pandas as pd
 import torch
 from skimage import io
-import numpy as np
 from PIL import Image, ImageFile
 from tqdm import tqdm
+import os
 
 
 class DumpstersDataset(Dataset):
@@ -27,14 +25,14 @@ class DumpstersDataset(Dataset):
         pbar = tqdm(total=len(images_path.values), leave=False, position=0)
         pbar.set_description("Loading images from "+csv_file)
         for image_path in images_path.values:
-            print(image_path)
-            image = io.imread(image_path)
-            if len(image.shape) > 3:
-                image = image[0]
-            image = Image.fromarray(image)
-            if self.transform:
-                image = self.transform(image)
-            images.append(image)
+            if os.path.exists(image_path):
+                image = io.imread(image_path)
+                if len(image.shape) > 3:
+                    image = image[0]
+                image = Image.fromarray(image)
+                if self.transform:
+                    image = self.transform(image)
+                images.append(image)
 
             pbar.update()
         pbar.close()
