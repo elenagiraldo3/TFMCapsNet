@@ -126,7 +126,8 @@ class CapsNetTrainer:
             correct += (predicted == labels).sum()
             for i in range(labels.size(0)):
                 for j in range(labels.size(1)):
-                    matrices[j][labels[i, j], predicted[i, j]] += 1
+                    if labels[i, j] != -1:
+                        matrices[j][labels[i, j], predicted[i, j]] += 1
 
             for i in range(labels.size(0)):
                 c = (predicted[i] == labels[i]).squeeze()
