@@ -1,7 +1,6 @@
 ########################################
 #### Licensed under the MIT license ####
 ########################################
-
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -9,17 +8,17 @@ import torch.nn.functional as F
 
 class MarginLoss(nn.Module):
     def __init__(self, size_average=False, loss_lambda=0.5):
-        '''
+        """
         Margin loss for digit existence
         Eq. (4): L_k = T_k * max(0, m+ - ||v_k||)^2 + lambda * (1 - T_k) * max(0, ||v_k|| - m-)^2
-        
+
         Args:
             size_average: should the losses be averaged (True) or summed (False) over observations for each minibatch.
             loss_lambda: parameter for down-weighting the loss for missing digits
-        '''
+        """
         super(MarginLoss, self).__init__()
         self.size_average = size_average
-        self.m_plus = 0.9  # TODO: que son m+ y m-
+        self.m_plus = 0.9
         self.m_minus = 0.1
         self.loss_lambda = loss_lambda
 
@@ -47,13 +46,17 @@ class CapsuleLoss(nn.Module):
         super(CapsuleLoss, self).__init__()
         self.size_average = size_average
         self.recons = recons
-        self.margin_loss = MarginLoss(size_average=size_average, loss_lambda=loss_lambda)
-        self.reconstruction_loss = nn.MSELoss(reduction="sum")
+        # self.margin_loss = MarginLoss(size_average=size_average, loss_lambda=loss_lambda)
+        # self.reconstruction_loss = nn.MSELoss(reduction="sum")
+        self.loss = nn.MSELoss(reduction="sum")
         self.recon_loss_scale = recon_loss_scale
 
     def forward(self, inputs, labels, images, reconstructions):
-        margin_loss = self.margin_loss(inputs, labels)
-        caps_loss = margin_loss
+        # margin_loss = self.margin_loss(inputs, labels)
+        labels = labels.to(torch.float32)
+        mse_loss = self.loss(inputs, labels)
+        # caps_loss = margin_loss
+        caps_loss = mse_loss
         if self.recons:
             reconstruction_loss = self.reconstruction_loss(reconstructions, images)
             caps_loss += self.recon_loss_scale * reconstruction_loss
