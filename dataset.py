@@ -21,23 +21,25 @@ class DumpstersDataset(Dataset):
         images_path = dataframe[dataframe.columns[0]]
         images = []
         self.transform = transform
+        self.labels = dataframe.drop(dataframe.columns[0], axis=1)
         ImageFile.LOAD_TRUNCATED_IMAGES = True
         pbar = tqdm(total=len(images_path.values), leave=False, position=0)
-        pbar.set_description("Loading images from "+csv_file)
-        for image_path in images_path.values:
+        pbar.set_description("Loading images from " + csv_file)
+        for idx, image_path in enumerate(images_path.values):
             if os.path.exists(image_path):
-                image = io.imread(image_path)
+                image = io.imread(image_path, plugin='matplotlib')
                 if len(image.shape) > 3:
                     image = image[0]
                 image = Image.fromarray(image)
                 if self.transform:
                     image = self.transform(image)
                 images.append(image)
+            else:
+                self.labels = self.labels.drop([idx])
 
             pbar.update()
         pbar.close()
         self.images = pd.Series(images)
-        self.labels = dataframe.drop(dataframe.columns[0], axis=1)
 
     def __len__(self):
         return len(self.labels)
