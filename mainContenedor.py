@@ -57,9 +57,7 @@ args.eval_data_path = f"{args.data_folder}/validation.csv"
 args.test_data_path = f"{args.data_folder}/test.csv"
 size = 299
 mean, std = ((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-labels = ["TIPO_CONTENEDOR", "SOTERRADO", "ESTADO_GRAFITI", "ESTADO_QUEMADO", "ESTADO_N_BOCA", "ESTADO_BOCAS",
-          "ESTADO_CIERRE", "ESTADO_TIPO_DE_CIERRE", "ESTADO_SERIGRAFIA", "ESTADO_CUERPO",
-          "ESTADO_TAPA", "ESTADO_ELEMENTOS_DE_EVALUACION", "ESTADO_TIPO_DE_CARGA"]
+labels = ["ENVASES", "ORGANICA", "PAPEL_CARTON", "RESTOS", "VIDRIO", "SOTERRADO", "ESTADO_GRAFITI", "ESTADO_QUEMADO"]
 dictionary = {"TIPO_CONTENEDOR": {"0": "Envases Ligeros",
                                   "1": "Materia Orgánica",
                                   "2": "Papel Cartón",
@@ -80,7 +78,7 @@ dictionary = {"TIPO_CONTENEDOR": {"0": "Envases Ligeros",
               "ESTADO_TIPO_DE_CARGA": {"0": "Trasera", "1": "Lateral", "2": "Superior"}}
 
 num_labels = len(labels)
-num_classes = [5, 2, 2, 2, 5, 3, 3, 9, 3, 2, 2, 2, 3]
+num_classes = [2, 2, 2, 2, 2, 2, 2, 2]
 
 resize = transforms.Compose([
     transforms.Resize((70, 70))
@@ -131,9 +129,8 @@ transform_eval_test = transforms.Compose([
 
 loaders = {}
 
-columns = ["FOTO_CONTENEDOR", "TIPO_CONTENEDOR", "SOTERRADO", "ESTADO_GRAFITI", "ESTADO_QUEMADO", "ESTADO_N_BOCA",
-           "ESTADO_BOCAS", "ESTADO_CIERRE", "ESTADO_TIPO_DE_CIERRE", "ESTADO_SERIGRAFIA", "ESTADO_CUERPO",
-           "ESTADO_TAPA", "ESTADO_ELEMENTOS_DE_EVALUACION", "ESTADO_TIPO_DE_CARGA"]
+columns = ["FOTO_CONTENEDOR", "ENVASES", "ORGANICA", "PAPEL_CARTON", "RESTOS", "VIDRIO", "SOTERRADO", "ESTADO_GRAFITI",
+           "ESTADO_QUEMADO"]
 trainset = dataset.DumpstersDataset(args.train_data_path, columns=columns, transform=transform)
 evalset = dataset.DumpstersDataset(args.eval_data_path, columns=columns, transform=transform_eval_test)
 testset = dataset.DumpstersDataset(args.test_data_path, columns=columns, transform=transform_eval_test)

@@ -51,7 +51,7 @@ class CapsNetTrainer:
 
     def run(self, epochs, labels_name, num_classes):
         print(8 * '#', 'Run started'.upper(), 8 * '#')
-        # eye = torch.eye(len(classes)).to(self.device)
+        # eye = torch.eye(num_classes[0]).to(self.device)
         for epoch in range(1, epochs + 1):
             for phase in ['train', 'eval']:
                 print(f'{phase}ing...'.capitalize())
@@ -69,7 +69,7 @@ class CapsNetTrainer:
                     t1 = time()
                     images, labels = images.to(self.device), labels.to(self.device)
                     # One-hot encode labels
-                    # labels[label] = eyes[label]
+                    # labels = [eye[labels[0]], labels[1:]]
 
                     self.optimizer.zero_grad()
 
