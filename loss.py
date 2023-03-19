@@ -46,17 +46,14 @@ class CapsuleLoss(nn.Module):
         super(CapsuleLoss, self).__init__()
         self.size_average = size_average
         self.recons = recons
-        # self.margin_loss = MarginLoss(size_average=size_average, loss_lambda=loss_lambda)
-        # self.reconstruction_loss = nn.MSELoss(reduction="sum")
-        self.loss = nn.MSELoss(reduction="sum")
+        self.margin_loss = MarginLoss(size_average=size_average, loss_lambda=loss_lambda)
+        self.reconstruction_loss = nn.MSELoss(reduction="sum")
         self.recon_loss_scale = recon_loss_scale
 
     def forward(self, inputs, labels, images, reconstructions):
-        # margin_loss = self.margin_loss(inputs, labels)
-        labels = labels.to(torch.float32)
-        mse_loss = self.loss(inputs, labels)
-        # caps_loss = margin_loss
-        caps_loss = mse_loss
+        # labels = labels.to(torch.float32)
+        margin_loss = self.margin_loss(inputs, labels)
+        caps_loss = margin_loss
         if self.recons:
             reconstruction_loss = self.reconstruction_loss(reconstructions, images)
             caps_loss += self.recon_loss_scale * reconstruction_loss
