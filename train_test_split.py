@@ -15,34 +15,34 @@ folder = os.path.dirname(args.dataset)
 # columns = ["FOTO_CONTENEDOR", "ENVASES", "ORGANICA", "PAPEL_CARTON", "RESTOS", "VIDRIO", "SOTERRADO", "ESTADO_GRAFITI",
 #            "ESTADO_QUEMADO"]
 columns = ['FOTO_PUNTO', 'ENT_BOLSAS_EELL', 'ENT_PAPEL_CARTON_DOMESTICO', 'ENT_PAPEL_CARTON_INDUSTRIAL',
-                       'ENT_VIDRIO', 'ENT_BOLSAS_RESTO', 'ENT_PODAS', 'ENT_ESCOMBROS', 'ENT_OBJETOS_VOLUMINOSOS',
-                       'ENT_OTROS']
+           'ENT_VIDRIO', 'ENT_BOLSAS_RESTO', 'ENT_PODAS', 'ENT_ESCOMBROS', 'ENT_OBJETOS_VOLUMINOSOS',
+           'ENT_OTROS', 'DESBORDE_RESTO', 'DESBORDE_EELL', 'DESBORDE_PC', 'DESBORDE_VIDRIO', 'ESTABL_COMERCIOS',
+           'ESTABL_HORECA', 'ESTABL_OBRAS', 'ESTABL_CENTROPUBLICO']
 data = pd.read_csv(args.dataset, delimiter=';', encoding='ISO-8859-1', usecols=columns)
 data.drop_duplicates()
 
 X = data['FOTO_PUNTO']
 y = data.drop(columns=['FOTO_PUNTO'])
-# X_full, _, y_full, _ = train_test_split(X, y, test_size=0.8)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=args.testSize)
+X_full, _, y_full, _ = train_test_split(X, y, test_size=0.99)
+X_train, X_test, y_train, y_test = train_test_split(X_full, y_full, test_size=args.testSize)
 X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=args.validationSize)
 
 # save the data
 train_df = pd.concat([X_train, y_train], axis=1)
-train_df.to_csv(f'{folder}/trainfull_punto.csv', index=False)
+train_df.to_csv(f'{folder}/train1_punto.csv', index=False)
 
 val_df = pd.concat([X_val, y_val], axis=1)
-val_df.to_csv(f'{folder}/validationfull_punto.csv', index=False)
+val_df.to_csv(f'{folder}/validation1_punto.csv', index=False)
 
 test_df = pd.concat([X_test, y_test], axis=1)
-test_df.to_csv(f'{folder}/testfull_punto.csv', index=False)
+test_df.to_csv(f'{folder}/test1_punto.csv', index=False)
 
 for column in y.columns:
-    y_bueno = np.count_nonzero(y[column])
+    y_bueno = np.count_nonzero(y_full[column])
     y_test_bueno = int(y_bueno * 0.2)
-    y_val_bueno = int((y_bueno-y_test_bueno)*0.2)
-    y_train_bueno = int(y_bueno-y_val_bueno-y_test_bueno)
+    y_val_bueno = int((y_bueno - y_test_bueno) * 0.2)
+    y_train_bueno = int(y_bueno - y_val_bueno - y_test_bueno)
     print(column)
     print("y_train=", np.count_nonzero(y_train[column]), " y tendría que ser ", y_train_bueno)
     print("y_val=", np.count_nonzero(y_val[column]), " y tendría que ser ", y_val_bueno)
     print("y_test=", np.count_nonzero(y_test[column]), " y tendría que ser ", y_test_bueno)
-

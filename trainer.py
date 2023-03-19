@@ -186,7 +186,7 @@ class CapsNetTrainer:
 
             else:
                 ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
-            plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{i}.png'))
+            plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{labels_name[i]}.png'))
 
             # else:
             #     print('Accuracy of %5s : NaN' % (

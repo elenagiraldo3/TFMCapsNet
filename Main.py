@@ -39,13 +39,18 @@ class Main:
                        "ESTADO_GRAFITI",
                        "ESTADO_QUEMADO"]
         elif self.dataset.upper() == 'PUNTO':
-            self.labels = ['ENT_BOLSAS_EELL', 'ENT_PAPEL_CARTON_DOMESTICO', 'ENT_PAPEL_CARTON_INDUSTRIAL', 'ENT_VIDRIO',
-                           'ENT_BOLSAS_RESTO', 'ENT_PODAS', 'ENT_ESCOMBROS', 'ENT_OBJETOS_VOLUMINOSOS', 'ENT_OTROS']
+            self.labels = ['ENT_BOLSAS_EELL', 'ENT_PAPEL_CARTON_DOMESTICO', 'ENT_PAPEL_CARTON_INDUSTRIAL',
+                           'ENT_VIDRIO', 'ENT_BOLSAS_RESTO', 'ENT_PODAS', 'ENT_ESCOMBROS', 'ENT_OBJETOS_VOLUMINOSOS',
+                           'ENT_OTROS', 'DESBORDE_RESTO', 'DESBORDE_EELL', 'DESBORDE_PC', 'DESBORDE_VIDRIO',
+                           'ESTABL_COMERCIOS',
+                           'ESTABL_HORECA', 'ESTABL_OBRAS', 'ESTABL_CENTROPUBLICO']
             self.num_labels = len(self.labels)
-            self.num_classes = [2, 2, 2, 2, 2, 2, 2, 2, 2]
+            self.num_classes = [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2]
             columns = ['FOTO_PUNTO', 'ENT_BOLSAS_EELL', 'ENT_PAPEL_CARTON_DOMESTICO', 'ENT_PAPEL_CARTON_INDUSTRIAL',
                        'ENT_VIDRIO', 'ENT_BOLSAS_RESTO', 'ENT_PODAS', 'ENT_ESCOMBROS', 'ENT_OBJETOS_VOLUMINOSOS',
-                       'ENT_OTROS']
+                       'ENT_OTROS', 'DESBORDE_RESTO', 'DESBORDE_EELL', 'DESBORDE_PC', 'DESBORDE_VIDRIO',
+                       'ESTABL_COMERCIOS',
+                       'ESTABL_HORECA', 'ESTABL_OBRAS', 'ESTABL_CENTROPUBLICO']
         else:
             raise ValueError('Dataset must be Punto or Contenedor')
 
