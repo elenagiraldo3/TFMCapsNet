@@ -144,15 +144,13 @@ class CapsNetTrainer:
         for i in range(len(labels_name)):
             print(matrices[i])
 
-            plt.figure(figsize=(8, 6), dpi=100)
+            plt.figure(figsize=(10, 10), dpi=100)
             sns.set(font_scale=1.1)
             ax = sns.heatmap(matrices[i], annot=True, fmt='d')
-            ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
             ax.xaxis.set_ticklabels(['False', 'True'])
             ax.set_ylabel("Real", fontsize=14, labelpad=20)
             ax.yaxis.set_ticklabels(['False', 'True'])
             ax.set_title(f"Confusion Matrix for {labels_name}", fontsize=14, pad=20)
-            plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{labels_name}.png'))
 
             if class_total[i] != 0:
                 if num_classes[i] == 2:  # Resultado binario, calcular cuando es True
@@ -182,6 +180,14 @@ class CapsNetTrainer:
                     labels_name[i], 100 * class_correct[i] / class_total[i]))
                 print('Precision of %5s : %4f %%' % (labels_name[i], 100 * precision))
                 print('Recall of %5s : %4f %%' % (labels_name[i], 100 * recall))
+                stats_text = "\n\nAccuracy={:0.3f}\nPrecision={:0.3f}\nRecall={:0.3f}".format(
+                    accuracy, precision, recall)
+                ax.set_xlabel("Predicted"+stats_text, fontsize=14, labelpad=20)
+
+            else:
+                ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
+            plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{i}.png'))
+
             # else:
             #     print('Accuracy of %5s : NaN' % (
             #         labels_name[i]))
