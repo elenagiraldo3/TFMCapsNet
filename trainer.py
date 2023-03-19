@@ -11,6 +11,8 @@ from numpy import prod
 from model import CapsuleNetwork
 from loss import CapsuleLoss
 from time import time
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 SAVE_MODEL_PATH = 'checkpoints/'
 if not os.path.exists(SAVE_MODEL_PATH):
@@ -141,6 +143,17 @@ class CapsNetTrainer:
 
         for i in range(len(labels_name)):
             print(matrices[i])
+
+            plt.figure(figsize=(8, 6), dpi=100)
+            sns.set(font_scale=1.1)
+            ax = sns.heatmap(matrices[i], annot=True, fmt='d')
+            ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
+            ax.xaxis.set_ticklabels(['False', 'True'])
+            ax.set_ylabel("Real", fontsize=14, labelpad=20)
+            ax.yaxis.set_ticklabels(['False', 'True'])
+            ax.set_title(f"Confusion Matrix for {labels_name}", fontsize=14, pad=20)
+            plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{labels_name}.png'))
+
             if class_total[i] != 0:
                 if num_classes[i] == 2:  # Resultado binario, calcular cuando es True
                     precision = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][1, 0])
@@ -151,8 +164,16 @@ class CapsNetTrainer:
                     recalls = []
 
                     for actual_class in range(num_classes[i]):
-                        precisions.append(matrices[i][actual_class, actual_class] / (matrices[i][actual_class, actual_class] + matrices[i][actual_class, :actual_class].sum() + matrices[i][actual_class, actual_class+1:].sum()))
-                        recalls.append(matrices[i][actual_class, actual_class] / (matrices[i][actual_class, actual_class] + matrices[i][:actual_class, actual_class].sum() + matrices[i][actual_class+1:, actual_class].sum()))
+                        precisions.append(matrices[i][actual_class, actual_class] / (
+                                matrices[i][actual_class, actual_class] + matrices[i][actual_class,
+                                                                          :actual_class].sum() + matrices[i][
+                                                                                                 actual_class,
+                                                                                                 actual_class + 1:].sum()))
+                        recalls.append(matrices[i][actual_class, actual_class] / (
+                                matrices[i][actual_class, actual_class] + matrices[i][:actual_class,
+                                                                          actual_class].sum() + matrices[i][
+                                                                                                actual_class + 1:,
+                                                                                                actual_class].sum()))
 
                     precision = np.nanmean(precisions)
                     recall = np.nanmean(recalls)
@@ -164,6 +185,3 @@ class CapsNetTrainer:
             # else:
             #     print('Accuracy of %5s : NaN' % (
             #         labels_name[i]))
-
-
-
