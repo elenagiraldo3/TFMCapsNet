@@ -145,12 +145,13 @@ class CapsNetTrainer:
             print(matrices[i])
 
             plt.figure(figsize=(10, 10), dpi=100)
+            plt.tight_layout()
             sns.set(font_scale=1.1)
             ax = sns.heatmap(matrices[i], annot=True, fmt='d')
             ax.xaxis.set_ticklabels(['False', 'True'])
             ax.set_ylabel("Real", fontsize=14, labelpad=20)
             ax.yaxis.set_ticklabels(['False', 'True'])
-            ax.set_title(f"Confusion Matrix for {labels_name}", fontsize=14, pad=20)
+            ax.set_title(f"Confusion Matrix for {labels_name[i]}", fontsize=14, pad=20)
 
             if class_total[i] != 0:
                 if num_classes[i] == 2:  # Resultado binario, calcular cuando es True
@@ -187,6 +188,7 @@ class CapsNetTrainer:
             else:
                 ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
             plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{labels_name[i]}.png'))
+
 
             # else:
             #     print('Accuracy of %5s : NaN' % (
