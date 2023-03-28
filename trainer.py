@@ -155,8 +155,8 @@ class CapsNetTrainer:
 
             if class_total[i] != 0:
                 if num_classes[i] == 2:  # Resultado binario, calcular cuando es True
-                    precision = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][1, 0])
-                    recall = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][0, 1])
+                    precision = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][0, 1])
+                    recall = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][1, 0])
 
                 else:
                     precisions = []
@@ -189,7 +189,3 @@ class CapsNetTrainer:
                 ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
             plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{labels_name[i]}.png'))
 
-
-            # else:
-            #     print('Accuracy of %5s : NaN' % (
-            #         labels_name[i]))
