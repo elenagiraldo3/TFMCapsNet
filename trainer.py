@@ -113,11 +113,21 @@ class CapsNetTrainer:
         matrices = []  # confusion matrices
         for i in range(len(num_classes)):
             matrices.append(np.zeros((num_classes[i], num_classes[i]), dtype=np.int))
+
+        first_batch = True
         for images, labels in self.loaders['test']:
             images, labels = images.to(self.device), labels.to(self.device)
 
             outputs = self.net(images)
             if type(outputs) is tuple:
+                if first_batch:
+                    for i, out_image in enumerate(outputs[1]):
+                        plt.figure()
+                        out_image = out_image.cpu().numpy()
+                        plt.imshow(out_image)
+                        plt.savefig(f"{SAVE_MODEL_PATH}/image{i}.png")
+                first_batch = False
+
                 outputs = outputs[0]
 
             predicted = torch.round(outputs)
