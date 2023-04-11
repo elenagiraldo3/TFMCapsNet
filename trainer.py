@@ -87,7 +87,7 @@ class CapsNetTrainer:
 
                     running_loss += loss.item()
 
-                    predicted = torch.round(outputs)
+                    predicted = torch.round(outputs[0]) if type(outputs) is tuple else torch.round(outputs)
                     predicted = predicted.long()
                     total += (labels.size(0) * labels.size(1))
                     correct += (predicted == labels).sum()
