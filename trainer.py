@@ -34,7 +34,7 @@ class CapsNetTrainer:
         self.recons = recons
         self.classes = classes
         self.loaders = loaders
-        img_shape = self.loaders['train'].dataset.images[0].numpy().shape
+        img_shape = self.loaders['train'].dataset[0][0].numpy().shape
 
         self.net = CapsuleNetwork(img_shape, num_filters, stride, filter_size, recons, primary_dim=8,
                                   num_classes=self.classes, out_dim=16, num_routing=num_routing, device=self.device).to(
