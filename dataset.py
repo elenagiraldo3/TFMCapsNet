@@ -31,8 +31,6 @@ class DumpstersDataset(Dataset):
                 if len(image.shape) > 3:
                     image = image[0]
                 image = Image.fromarray(image)
-                if self.transform:
-                    image = self.transform(image)
                 images.append(image)
             else:
                 self.labels = self.labels.drop([idx])
@@ -49,6 +47,8 @@ class DumpstersDataset(Dataset):
             idx = idx.tolist()
 
         image = self.images.iloc[idx]
+        if self.transform:
+            image = self.transform(image)
         labels = self.labels.iloc[idx]
         labels = torch.tensor(labels.values)
 
