@@ -139,13 +139,13 @@ if __name__ == "__main__":
     # Reconstruction
     parser.add_argument('-recons', '--reconstruction', action='store_true', help='Flag to reconstruction.')
     # Crop
-    parser.add_argument('-c', '--crop', action='store_false', help='Flag to crop.')
+    parser.add_argument('-c', '--crop', action='store_true', help='Flag to crop.')
     # Jitter
     parser.add_argument('-j', '--jitter', action='store_true', help='Flag to jitter.')
     # Rotation
     parser.add_argument('-r', '--rotation', action='store_true', help='Flag to rotation.')
     # Flip
-    parser.add_argument('-f', '--flip', action='store_false', help='Flag to horizontal flip.')
+    parser.add_argument('-f', '--flip', action='store_true', help='Flag to horizontal flip.')
     # Learning rate
     parser.add_argument('-lr', '--learning_rate', type=float, default=1e-3, help='Learning rate.')
     # Number of routing iterations

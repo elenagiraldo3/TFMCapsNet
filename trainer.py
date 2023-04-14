@@ -13,6 +13,7 @@ from loss import CapsuleLoss
 from time import time
 import seaborn as sns
 import matplotlib.pyplot as plt
+from torchsummary import summary
 
 SAVE_MODEL_PATH = 'checkpoints/'
 if not os.path.exists(SAVE_MODEL_PATH):
@@ -38,7 +39,7 @@ class CapsNetTrainer:
         self.net = CapsuleNetwork(img_shape, num_filters, stride, filter_size, recons, primary_dim=8,
                                   num_classes=self.classes, out_dim=16, num_routing=num_routing, device=self.device).to(
             self.device)
-        # summary(self.net, (3, 70, 70))
+        summary(self.net, (3, 70, 70))
         if self.multi_gpu:
             self.net = nn.DataParallel(self.net)
 
@@ -121,13 +122,12 @@ class CapsNetTrainer:
             outputs = self.net(images)
             if type(outputs) is tuple:
                 if first_batch:
-                    for i, out_image in enumerate(outputs[1]):
-                        plt.figure()
-                        out_image = out_image.cpu().numpy()
-                        plt.imshow(out_image)
-                        plt.savefig(f"{SAVE_MODEL_PATH}/image{i}.png")
+                    for index, image in enumerate(outputs[1]):
+                        plt.imshow(image.permute(1, 2, 0).cpu().detach(), vmin=0, vmax=1)
+                        plt.savefig(f"{index}.png")
+                        plt.imshow(images[index].permute(1, 2, 0).cpu().detach(), vmin=0, vmax=1)
+                        plt.savefig(f"original{index}.png")
                 first_batch = False
-
                 outputs = outputs[0]
 
             predicted = torch.round(outputs)

@@ -49,11 +49,7 @@ class CapsuleNetwork(nn.Module):
 
         if self.recons:
             # Reconstruct the *predicted* image
-            _, max_length_idx = preds.max(dim=1)
-            y = torch.eye(self.num_classes).to(self.device)
-            y = y.index_select(dim=0, index=max_length_idx).unsqueeze(2)
-
-            reconstructions = self.decoder((out * y).view(out.size(0), -1))
+            reconstructions = self.decoder(out.view(out.size(0), -1))
             reconstructions = reconstructions.view(-1, *self.img_shape)
             output = (preds, reconstructions)
         return output
