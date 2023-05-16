@@ -4,17 +4,16 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from numpy import prod
 import capsules as caps
 
 
 class CapsuleNetwork(nn.Module):
-    def __init__(self, img_shape, num_filters, stride, filter_size, recons, primary_dim, num_classes, out_dim,
-                 num_routing, device: torch.device, kernel_size=9):
+    def __init__(self, img_shape, num_filters, stride, filter_size, recons, primary_dim, num_labels, out_dim,
+                 num_routing, device: torch.device):
         super(CapsuleNetwork, self).__init__()
         self.img_shape = img_shape
-        self.num_classes = num_classes
+        self.num_labels = num_labels
         self.device = device
         self.recons = recons
         self.conv1 = nn.Conv2d(img_shape[0], num_filters, filter_size, stride, bias=True)
@@ -24,11 +23,11 @@ class CapsuleNetwork(nn.Module):
         # primary_caps value currently must be set by hand
         # primary_caps = int(num_filters / primary_dim * (img_shape[1] - 2 * (kernel_size - stride)) * (
         #            img_shape[2] - 2 * (kernel_size - stride)) / 4)
-        self.digits = caps.RoutingCapsules(primary_dim, 512, num_classes, out_dim, num_routing, device=self.device)
+        self.digits = caps.RoutingCapsules(primary_dim, 512, num_labels, out_dim, num_routing, device=self.device)
 
         if self.recons:
             self.decoder = nn.Sequential(
-                nn.Linear(out_dim * num_classes, 512),
+                nn.Linear(out_dim * num_labels, 512),
                 nn.ReLU(inplace=True),
                 nn.Linear(512, 1024),
                 nn.ReLU(inplace=True),

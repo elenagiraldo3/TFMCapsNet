@@ -46,7 +46,7 @@ class PrimaryCapsules(nn.Module):
 		return squash(out)
 
 
-class RoutingCapsules(nn.Module):  # TODO: Volver a leer la parte del enrutamiento en el paper
+class RoutingCapsules(nn.Module):
 	def __init__(self, in_dim, in_caps, num_caps, dim_caps, num_routing, device: torch.device):
 		"""
 		Initialize the layer.
@@ -66,7 +66,7 @@ class RoutingCapsules(nn.Module):  # TODO: Volver a leer la parte del enrutamien
 		self.num_routing = num_routing
 		self.device = device
 
-		self.W = nn.Parameter(0.01 * torch.randn(1, num_caps, in_caps, dim_caps, in_dim))  # TODO: que es esto
+		self.W = nn.Parameter(0.01 * torch.randn(1, num_caps, in_caps, dim_caps, in_dim))
 
 	def __repr__(self):
 		tab = '  '

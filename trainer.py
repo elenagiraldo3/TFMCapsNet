@@ -25,19 +25,18 @@ class CapsNetTrainer:
     Wrapper object for handling training and evaluation
     """
 
-    def __init__(self, loaders, batch_size, learning_rate, num_routing=3, lr_decay=0.99, classes=7, num_filters=128,
-                 stride=2, filter_size=5, recons=False,
-                 device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
+    def __init__(self, loaders, learning_rate, num_routing=3, lr_decay=0.99, labels=8, num_filters=128, stride=2,
+                 filter_size=5, recons=False, device=torch.device("cuda" if torch.cuda.is_available() else "cpu"),
                  multi_gpu=(torch.cuda.device_count() > 1)):
         self.device = device
         self.multi_gpu = multi_gpu
         self.recons = recons
-        self.classes = classes
+        self.labels = labels
         self.loaders = loaders
         img_shape = self.loaders['train'].dataset[0][0].numpy().shape
 
         self.net = CapsuleNetwork(img_shape, num_filters, stride, filter_size, recons, primary_dim=8,
-                                  num_classes=self.classes, out_dim=16, num_routing=num_routing, device=self.device).to(
+                                  num_labels=self.labels, out_dim=16, num_routing=num_routing, device=self.device).to(
             self.device)
         summary(self.net, (3, 70, 70))
         if self.multi_gpu:
@@ -52,9 +51,8 @@ class CapsNetTrainer:
     def __repr__(self):
         return repr(self.net)
 
-    def run(self, epochs, labels_name, num_classes):
+    def run(self, epochs, labels_name, num_labels):
         print(8 * '#', 'Run started'.upper(), 8 * '#')
-        # eye = torch.eye(num_classes[0]).to(self.device)
         for epoch in range(1, epochs + 1):
             for phase in ['train', 'eval']:
                 print(f'{phase}ing...'.capitalize())
@@ -112,8 +110,8 @@ class CapsNetTrainer:
         correct = 0
         total = 0
         matrices = []  # confusion matrices
-        for i in range(len(num_classes)):
-            matrices.append(np.zeros((num_classes[i], num_classes[i]), dtype=np.int))
+        for i in range(len(num_labels)):
+            matrices.append(np.zeros((num_labels[i], num_labels[i]), dtype=np.int))
 
         first_batch = True
         for images, labels in self.loaders['test']:
@@ -164,7 +162,7 @@ class CapsNetTrainer:
             ax.set_title(f"Confusion Matrix for {labels_name[i]}", fontsize=14, pad=20)
 
             if class_total[i] != 0:
-                if num_classes[i] == 2:  # Resultado binario, calcular cuando es True
+                if num_labels[i] == 2:  # Resultado binario, calcular cuando es True
                     precision = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][0, 1])
                     recall = matrices[i][1, 1] / (matrices[i][1, 1] + matrices[i][1, 0])
 
@@ -172,17 +170,16 @@ class CapsNetTrainer:
                     precisions = []
                     recalls = []
 
-                    for actual_class in range(num_classes[i]):
+                    for actual_class in range(num_labels[i]):
                         precisions.append(matrices[i][actual_class, actual_class] / (
-                                matrices[i][actual_class, actual_class] + matrices[i][actual_class,
-                                                                          :actual_class].sum() + matrices[i][
-                                                                                                 actual_class,
-                                                                                                 actual_class + 1:].sum()))
+                                matrices[i][actual_class, actual_class] +
+                                matrices[i][actual_class, :actual_class].sum() +
+                                matrices[i][actual_class, actual_class + 1:].sum()))
+
                         recalls.append(matrices[i][actual_class, actual_class] / (
-                                matrices[i][actual_class, actual_class] + matrices[i][:actual_class,
-                                                                          actual_class].sum() + matrices[i][
-                                                                                                actual_class + 1:,
-                                                                                                actual_class].sum()))
+                                matrices[i][actual_class, actual_class] +
+                                matrices[i][:actual_class, actual_class].sum() +
+                                matrices[i][actual_class + 1:, actual_class].sum()))
 
                     precision = np.nanmean(precisions)
                     recall = np.nanmean(recalls)
@@ -193,9 +190,8 @@ class CapsNetTrainer:
                 print('Recall of %5s : %4f %%' % (labels_name[i], 100 * recall))
                 stats_text = "\n\nAccuracy={:0.3f}\nPrecision={:0.3f}\nRecall={:0.3f}".format(
                     accuracy, precision, recall)
-                ax.set_xlabel("Predicted"+stats_text, fontsize=14, labelpad=20)
+                ax.set_xlabel("Predicted" + stats_text, fontsize=14, labelpad=20)
 
             else:
                 ax.set_xlabel("Predicted", fontsize=14, labelpad=20)
             plt.savefig(os.path.join(SAVE_MODEL_PATH, f'{labels_name[i]}.png'))
-

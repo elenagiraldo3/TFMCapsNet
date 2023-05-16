@@ -115,8 +115,8 @@ class Main:
         print(8 * '#', f'Using {self.dataset} dataset', 8 * '#')
 
         # Run
-        caps_net = CapsNetTrainer(self.loaders, self.batch_size, self.learning_rate, self.num_routing, self.lr_decay,
-                                  self.num_labels, self.num_filters, self.stride, self.filter_size, self.reconstruction,
+        caps_net = CapsNetTrainer(self.loaders, self.learning_rate, self.num_routing, self.lr_decay, self.num_labels,
+                                  self.num_filters, self.stride, self.filter_size, self.reconstruction,
                                   device=self.device, multi_gpu=self.multi_gpu)
         caps_net.run(self.epochs, labels_name=self.labels, num_classes=self.num_classes)
 
